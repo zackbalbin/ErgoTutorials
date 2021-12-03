@@ -6,9 +6,9 @@ import org.ergoplatform.appkit.config.{ErgoNodeConfig, ErgoToolConfig}
 object SimpleSend {
 
   def sendTx(configFileName: String): String = {
-    val conf: ErgoToolConfig = ErgoToolConfig.load(configFileName)
-    val nodeConf: ErgoNodeConfig = conf.getNode()
-    val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConf)
+    val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
+    val nodeConfig: ErgoNodeConfig = conf.getNode()
+    val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
 
     val addressIndex: Int = conf.getParameters().get("addressIndex").toInt
     val recieverWalletAddress: Address = Address.create(conf.getParameters().get("recieverWalletAddress"))
