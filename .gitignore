@@ -1,2 +1,4 @@
 /.metals
 /.vscode
+
+.DS_STORE
