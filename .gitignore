@@ -1,4 +1,7 @@
 /.metals
 /.vscode
 
+project
+target
+
 .DS_STORE

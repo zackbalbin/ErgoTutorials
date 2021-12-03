@@ -7,22 +7,22 @@ object SimpleSend {
 
   def sendTx(configFileName: String): String = {
     val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
-    val nodeConfig: ErgoNodeConfig = conf.getNode()
+    val nodeConfig: ErgoNodeConfig = config.getNode()
     val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
 
-    val addressIndex: Int = conf.getParameters().get("addressIndex").toInt
-    val recieverWalletAddress: Address = Address.create(conf.getParameters().get("recieverWalletAddress"))
+    val addressIndex: Int = config.getParameters().get("addressIndex").toInt
+    val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
 
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
       val prover: ErgoProver = ctx.newProverBuilder()
         .withMnemonic(
-          SecretString.create(nodeConf.getWallet().getMnemonic()),
-          SecretString.create(nodeConf.getWallet().getPassword()))
+          SecretString.create(nodeConfig.getWallet().getMnemonic()),
+          SecretString.create(nodeConfig.getWallet().getPassword()))
         .withEip3Secret(addressIndex)
         .build()
 
       val wallet: ErgoWallet = ctx.getWallet()
-      val amountToSpend: Long = 246000000L
+      val amountToSpend: Long = Parameters.OneErg
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
       val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
       if (!boxes.isPresent())
