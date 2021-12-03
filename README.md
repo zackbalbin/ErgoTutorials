@@ -6,9 +6,9 @@ Learn how to use the Ergo Appkit powered by the Ergo Platform!
 
 ### Tutorials
 
-| Tutorial Number | Tutorial Name | Tutorial Repo | Tutorial Video
+Tutorial Name | Tutorial Repo | Tutorial Video | Tutorial Difficulty |
 | --- | --- | --- | --- |
-| 1. | Simple Send | repo | video
+| Simple Send | repo | video | Starter |
 
 
 ### Youtube Videos
