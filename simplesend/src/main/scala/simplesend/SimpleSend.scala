@@ -57,8 +57,7 @@ object SimpleSend {
   }
 
   def main(args: Array[String]): Unit = {
-    //val txJson: String = sendTx("ergomainnet_config.json")
-    //System.out.println(txJson)
-    System.out.println("testsss")
+    val txJson: String = sendTx("ergo_config.json")
+    System.out.println(txJson)
   }
 }
