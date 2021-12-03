@@ -1,0 +1,13 @@
+/.bsp/
+
+target/
+
+project/.bloop
+project/metals.sbt
+project/project
+
+/.bloop
+/.metals
+/.vscode
+
+ergomainnet_config.json
