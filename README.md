@@ -8,7 +8,7 @@ Learn how to use the Ergo Appkit powered by the Ergo Platform!
 
 Tutorial Name | Tutorial Repo | Tutorial Video | Tutorial Difficulty |
 | --- | --- | --- | --- |
-| Simple Send | repo | video | Starter |
+| Simple Send | [Repo](https://github.com/zackbalbin/ErgoTutorials/tree/master/simplesend) | video | Starter |
 
 
 ### Youtube Videos
