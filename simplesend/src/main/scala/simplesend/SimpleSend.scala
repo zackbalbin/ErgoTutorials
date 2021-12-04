@@ -1,3 +1,11 @@
+/* 
+
+Simple Send Tutorial
+
+Create a simple transaction and send it to a wallet specified in the configuration file.
+
+*/ 
+
 package simplesend
 
 // Appkit Libraries
