@@ -21,14 +21,42 @@ object MintToken {
         .build()
 
       val wallet: ErgoWallet = ctx.getWallet()
-      val amountToSpend: Long = Parameters.OneErg 
+      val amountToSpend: Long = Parameters.OneErg
+      val totalToSpend: Long = amountToSpend + Parameters.MinFee
+      val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
+      if (!boxes.isPresent())
+        throw new ErgoClientException(s"Not enough coins in the wallet to pay $totalToSpend", null)
+      
+      val txBuilder = ctx.newTxBuilder()
 
-      "D"
+      val newBox = txBuilder.outBoxBuilder()
+        .value(amountToSpend)
+        .contract(ctx.compileContract(
+          ConstantsBuilder.create()
+            .item("todo", "todo")
+            .build(),
+          "{ todo }")
+        )
+        .build()
+
+      val tx: UnsignedTransaction = txBuilder
+        .boxesToSpend(boxes.get)
+        .outputs(newBox)
+        .fee(Parameters.MinFee)
+        .sendChangeTo(prover.getP2PKAddress())
+        .build()
+
+      val signed: SignedTransaction = prover.sign(tx)
+
+      val txId: String = ctx.sendTransaction(signed)
+
+      signed.toJson(true)
     })
     txJson
   }
 
   def main(args: Array[String]): Unit = {
-    println("Mint token tutorial")
+    val txJson: String = mintToken("ergo_config.json")
+    System.out.println(txJson)
   }
 }
