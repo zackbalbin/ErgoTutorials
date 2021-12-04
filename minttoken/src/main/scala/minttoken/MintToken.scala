@@ -11,6 +11,8 @@ object MintToken {
     val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
 
     val addressIndex: Int = config.getParameters().get("addressIndex").toInt
+    val tokenName: String = config.getParameters().get("tokenName")
+    val tokenAmount: Long = config.getParameters().get("tokenAmount").toLong
     
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
       val prover: ErgoProver = ctx.newProverBuilder()
@@ -36,6 +38,9 @@ object MintToken {
             .item("todo", "todo")
             .build(),
           "{ todo }")
+        )
+        .tokens(
+          new ErgoToken(tokenName, tokenAmount)
         )
         .build()
 

@@ -13,6 +13,8 @@
     },
     "parameters": {
         "addressIndex": 0,
+        "tokenName": "Token Name",
+        "tokenAmount": "Put Token Amount no paranthesis",
         "recieverWalletAddress": "Wallet Address"
     }
 }
