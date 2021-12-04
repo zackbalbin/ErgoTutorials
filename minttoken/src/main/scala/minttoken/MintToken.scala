@@ -13,6 +13,7 @@ object MintToken {
     val addressIndex: Int = config.getParameters().get("addressIndex").toInt
     val tokenName: String = config.getParameters().get("tokenName")
     val tokenAmount: Long = config.getParameters().get("tokenAmount").toLong
+    val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
     
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
       val prover: ErgoProver = ctx.newProverBuilder()
@@ -35,9 +36,9 @@ object MintToken {
         .value(amountToSpend)
         .contract(ctx.compileContract(
           ConstantsBuilder.create()
-            .item("todo", "todo")
+            .item("recPk", recieverWalletAddress)
             .build(),
-          "{ todo }")
+          "{ recPk }")
         )
         .tokens(
           new ErgoToken(tokenName, tokenAmount)
