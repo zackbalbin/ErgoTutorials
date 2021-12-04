@@ -12,5 +12,6 @@ project/target
 /.vscode
 
 ergomainnet_config.json
+ergotestnet_config.json
 
 .DS_STORE

@@ -62,7 +62,7 @@ object MintToken {
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = mintToken("ergo_config.json")
+    val txJson: String = mintToken("ergotestnet_config.json")
     System.out.println(txJson)
   }
 }
