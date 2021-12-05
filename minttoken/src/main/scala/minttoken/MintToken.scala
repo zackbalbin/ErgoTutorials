@@ -24,7 +24,7 @@ object MintToken {
         .build()
 
       val wallet: ErgoWallet = ctx.getWallet()
-      val amountToSpend: Long = Parameters.OneErg
+      val amountToSpend: Long = (Parameters.OneErg / 10)
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
       val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
       if (!boxes.isPresent())
@@ -36,12 +36,12 @@ object MintToken {
         .value(amountToSpend)
         .contract(ctx.compileContract(
           ConstantsBuilder.create()
-            .item("recPk", recieverWalletAddress)
+            .item("recPk", recieverWalletAddress.getPublicKey())
             .build(),
           "{ recPk }")
         )
         .tokens(
-          new ErgoToken(tokenName, tokenAmount)
+          new ErgoToken(tokenName, 1)
         )
         .build()
 
@@ -62,7 +62,7 @@ object MintToken {
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = mintToken("ergotestnet_config.json")
+    val txJson: String = mintToken("ergo_config.json")
     System.out.println(txJson)
   }
 }

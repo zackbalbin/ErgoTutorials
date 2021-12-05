@@ -1,3 +1,5 @@
 # Mint Token
 
-todo
+Script currently not done.
+
+Not a working script.
