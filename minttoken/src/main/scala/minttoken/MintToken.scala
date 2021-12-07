@@ -12,47 +12,47 @@ object MintToken {
 
     val addressIndex: Int = config.getParameters().get("addressIndex").toInt
     val tokenName: String = config.getParameters().get("tokenName")
+    val tokenDescription: String = config.getParameters().get("tokenDescription")
     val tokenAmount: Long = config.getParameters().get("tokenAmount").toLong
+    val tokenDecimals: Int = config.getParameters().get("tokenDecimals").toInt
     val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
     
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
-      val prover: ErgoProver = ctx.newProverBuilder()
-        .withMnemonic(
-          SecretString.create(nodeConfig.getWallet().getMnemonic()),
-          SecretString.create(nodeConfig.getWallet().getPassword()))
-        .withEip3Secret(addressIndex)
-        .build()
-
-      val wallet: ErgoWallet = ctx.getWallet()
       val amountToSpend: Long = (Parameters.OneErg / 10)
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
-      val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
-      if (!boxes.isPresent())
-        throw new ErgoClientException(s"Not enough coins in the wallet to pay $totalToSpend", null)
-      
-      val txBuilder = ctx.newTxBuilder()
 
+      val mnemonicString = nodeConfig.getWallet().getMnemonic()
+      val mnemonicPasswordString = nodeConfig.getWallet().getMnemonicPassword()
+      val mnemonic = Mnemonic.create(mnemonicString.toCharArray(), mnemonicPasswordString.toCharArray())
+
+      val senderProver = BoxOperations.createProver(ctx, mnemonic)
+      val sender = senderProver.getAddress()
+      val unspent = ctx.getUnspentBoxesFor(sender)
+      val boxesToSpend = BoxOperations.selectTop(unspent, totalToSpend)
+
+      val token = new ErgoToken(boxesToSpend.get(0).getId(), tokenAmount)
+
+      val txBuilder = ctx.newTxBuilder()
+      
       val newBox = txBuilder.outBoxBuilder()
         .value(amountToSpend)
+        .mintToken(token, tokenName, tokenDescription, tokenDecimals)
         .contract(ctx.compileContract(
           ConstantsBuilder.create()
             .item("recPk", recieverWalletAddress.getPublicKey())
             .build(),
           "{ recPk }")
         )
-        .tokens(
-          new ErgoToken(tokenName, 1)
-        )
         .build()
 
       val tx: UnsignedTransaction = txBuilder
-        .boxesToSpend(boxes.get)
+        .boxesToSpend(boxesToSpend)
         .outputs(newBox)
         .fee(Parameters.MinFee)
-        .sendChangeTo(prover.getP2PKAddress())
+        .sendChangeTo(senderProver.getP2PKAddress())
         .build()
 
-      val signed: SignedTransaction = prover.sign(tx)
+      val signed: SignedTransaction = senderProver.sign(tx)
 
       val txId: String = ctx.sendTransaction(signed)
 
@@ -62,7 +62,7 @@ object MintToken {
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = mintToken("ergo_config.json")
+    val txJson: String = mintToken("ergomainnet_config.json")
     System.out.println(txJson)
   }
 }
