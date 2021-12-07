@@ -1,5 +1,7 @@
 # Mint Token
 
-Script currently not done.
+Script currently works
 
-Not a working script.
+Still need to
+- Optimize code
+- Update config file paramters
