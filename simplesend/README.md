@@ -308,7 +308,8 @@ def sendTx(configFileName: String): String = {
   }
 ```
 
-The final full script
+This is what the full and final script will look like!
+
 ```scala
 package simplesend
 
