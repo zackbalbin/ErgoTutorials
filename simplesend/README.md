@@ -207,7 +207,12 @@ val tx: UnsignedTransaction: txBuilder
     .build()
 ```
 
-Sign the transaction
+All of the code is pretty much written at this point. Now we just have to sign and send our transaction
+
+**Step 14:** Sign the transaction
+
+We will create a new variable of type SignedTransaction called signed: The prover has a built in function that we can use to sign transcations. All we need to do is call it and pass in our transaction that we want to sign.
+
 ```scala
 val signed: SignedTransaction = prover.sign(tx)
 ```
