@@ -8,7 +8,7 @@ A basic script to send Ergo from a full node wallet to another wallet address us
 
 Import the libraries
 
-```
+```scala
 package simplesend
 
 import org.ergoplatform.appkit._
@@ -17,7 +17,7 @@ import org.ergoplatform.appkit.config.{ErgoNodeConfig, ErgoToolConfig}
 
 Create object and functions
 
-```
+```scala
 object SimpleSend {
 
     def sendTx(configFileName: String): String = {
@@ -32,14 +32,14 @@ object SimpleSend {
 ```
 
 Create main function logic
-```
+```scala
 val txJson: String = sendTx("ergo_config.json")
 println(txJson)
 ```
 
 Final main function logic
 
-```
+```scala
 def main(args: Array[String]): Unit = {
     val txJson: String = sendTx("ergo_config.json")
     println(txJson)
@@ -50,20 +50,20 @@ def main(args: Array[String]): Unit = {
 Now create the sendTx function logic
 
 Create config variables
-```
+```scala
 val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
 val nodeConfig: ErgoNodeConfig = config.getNode()
 val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
 ```
 
 Create variables based off of config file parameters
-```
+```scala
 val addressIndex: Int = config.getParameters().get("addressIndex").toInt
 val recieverWalletAddress: Address = Address.create(config.getParamters().get("reciverWalletAddress"))
 ```
 
 Create txJson variable
-```
+```scala
 val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
 
 })
@@ -73,7 +73,7 @@ val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
 Create logic inside txJson varaible
 
 Create the prover
-```
+```scala
 val prover: ErgoProver = ctx.newProverBuilder()
     .withMnemonic(
         SecretString.create(nodeConfig.getWallet().getMnemonic()),
@@ -83,30 +83,30 @@ val prover: ErgoProver = ctx.newProverBuilder()
 ```
 
 Create the wallet
-```
+```scala
 val wallet: ErgoWallet = ctx.getWallet()
 ```
 
 Create variables for how much Erg to spend
-```
+```scala
 val amountToSpend: Long = Parameters.OneErg
 val totoalToSpend: Long = amountToSpend + Parameters.MinFee
 ```
 
 Load the boxes to spend
-```
+```scala
 val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
 if (!boxes.isPresent())
     throw new ErgoClientException(s"Not enough coins in the wallet to pay $totalToSpend", null)
 ```
 
 Create the transation builder
-```
+```scala
 val txBuilder = ctx.newTxBuilder()
 ```
 
 Create new box to spend
-```
+```scala
 val newBox = txBuilder.outBoxBuilder()
     .value(amountToSpend)
     .contract(ctx.compileContract(
@@ -119,7 +119,7 @@ val newBox = txBuilder.outBoxBuilder()
 ```
 
 Create a new transaction from box
-```
+```scala
 val tx: UnsignedTransaction: txBuilder
     .boxesToSpend(boxes.get)
     .outputs(newBox)
@@ -129,22 +129,22 @@ val tx: UnsignedTransaction: txBuilder
 ```
 
 Sign the transaction
-```
+```scala
 val signed: SignedTransaction = prover.sign(tx)
 ```
 
 Send the transaction
-```
+```scala
 val txId: String = ctx.sendTransaction(signed)
 ```
 
 Convert the transaction information to JSON
-```
+```scala
 signed.toJson(true)
 ```
 
 The final txJson logic
-```
+```scala
 val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
       val prover: ErgoProver = ctx.newProverBuilder()
         .withMnemonic(
@@ -188,14 +188,14 @@ val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
 ```
 
 After txJson logic brackets close, return txJson to complete the sendTx function
-```
+```scala
     })
     txJson
 }
 ```
 
 The final sendTx function logic
-```
+```scala
 def sendTx(configFileName: String): String = {
     val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
     val nodeConfig: ErgoNodeConfig = config.getNode()
@@ -249,7 +249,7 @@ def sendTx(configFileName: String): String = {
 ```
 
 The final full script
-```
+```scala
 package simplesend
 
 import org.ergoplatform.appkit._
