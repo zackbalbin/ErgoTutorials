@@ -92,17 +92,24 @@ val addressIndex: Int = config.getParameters().get("addressIndex").toInt
 val recieverWalletAddress: Address = Address.create(config.getParamters().get("reciverWalletAddress"))
 ```
 
-Create txJson variable
+**Step 6:** Create txJson variable
+
+The txJson variable is a string object that will store the output created by our ergoClient executing our logic. We will pass in a varaible of type BlockchainContext called ctx into the ergoClient.execute function. 
+
 ```scala
 val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
 
 })
 ```
 
+Now we will create all of the logic in side the txJson object.
 
-Create logic inside txJson varaible
+**Step 7:** Create the prover
 
-Create the prover
+We will now create a new varaible called prover which is of type ErgoProver. We do that by setting it equal to our BlockchainContext object, ctx, .newProverBuilder(). After, we need make sure we use withMnemonic and withEip3Secret. The withMnemonic takes in to parameters which we set equal to our mnemonic phrase and password set in our config file. The Eip3Secret takes in our addressIndex, which is set to 0.
+
+Finally, we call the build function to finish the block of code.
+
 ```scala
 val prover: ErgoProver = ctx.newProverBuilder()
     .withMnemonic(
