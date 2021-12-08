@@ -5,7 +5,6 @@ import org.ergoplatform.appkit.config.{ErgoNodeConfig, ErgoToolConfig}
 
 object SimpleSend {
 
-  // Function to send transaction
   def sendTx(configFileName: String): String = {
     val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
     val nodeConfig: ErgoNodeConfig = config.getNode()
