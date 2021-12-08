@@ -186,7 +186,18 @@ val newBox = txBuilder.outBoxBuilder()
     .build()
 ```
 
-Create a new transaction from box
+**Step 13:** Create a new transaction from box
+
+Now we need to create our transaction. First, we will create a variable called tx of type UnsignedTransaction. We will use the txBuilder again to create our transaction. Just like when we built the box, we will have multiple functions we call in order to build our transaction.
+
+The first one is .boxesToSpend() and we pass in our boxes' .get() function. This is pass our List of InputBoxes to our txBuilder in order to creat our transaction.
+
+The second function to call is the .outputs() function and we pass in the newBox. Our new box will be the output of the transaction that we want to send.
+
+Our fee will be Parameters.MinFee and we will send our change to our own node wallet address. We get this by calling our prover's .getP2PKAddress(), which will return our wallet address.
+
+Finally we build our transaction by calling .build().
+
 ```scala
 val tx: UnsignedTransaction: txBuilder
     .boxesToSpend(boxes.get)
