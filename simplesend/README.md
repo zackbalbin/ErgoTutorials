@@ -140,7 +140,14 @@ val amountToSpend: Long = Parameters.OneErg
 val totalToSpend: Long = amountToSpend + Parameters.MinFee
 ```
 
-Load the boxes to spend
+**Step 10:** Load the boxes to spend
+
+Now we will start putting together everything we need to create our transaction. First we need to get our UTXOs that we can spend. Remember, a UTXO on Ergo is called a box.
+
+First we will create our boxes varaible. Our boxes variable will be an Optional of a List of InputBox. This means that we can either have a value of null or a List of (InputBox)s. We get this list by calling our wallet's getUnspentBoxes function and passing in our totalToSpend variable.
+
+After we load our boxes we need to test if we have enough funds to spend. We do this by using the .isPresent() function. If there are not enough boxes we will throw a new ErgoClientExecption with the description of the problem that occured.
+
 ```scala
 val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
 if (!boxes.isPresent())
