@@ -164,7 +164,15 @@ val txBuilder = ctx.newTxBuilder()
 
 **Step 12:** Create new box to spend
 
-todo
+This step is the most important step in our whole script. Here is where we create our box that we are going to spend.
+
+We need to create a new variable and set it equal to our txBuilder's .outBxBuilder() function. We then will pass different data into this new box by calling a few other functions.
+
+First, we call the .value function and pass in our amountToSpend variable that we create earlier. This will create a box with the necessary amount of erg needed.
+
+Next we create our contract by calling the .contract() function. We will pass in the blockchain context's .compileContract() function with an item called "recPk". The "recPk" will be set to our recieverWalletAddress's public key so we can send our funds to the correct wallet. Finally we build our contract by calling .build().
+
+Then at the end of the whole box we call the .build() function again to build our box. Now the box is created.
 
 ```scala
 val newBox = txBuilder.outBoxBuilder()
