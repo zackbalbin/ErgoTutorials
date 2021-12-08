@@ -6,6 +6,10 @@ A basic script to send Ergo from a full node wallet to another wallet address us
 
 ### Tutorial
 
+Disclaimer:
+- Not finished yet
+- Will be add more in depth descriptions about each code block soon!
+
 Import the libraries
 
 ```scala
