@@ -119,7 +119,10 @@ val prover: ErgoProver = ctx.newProverBuilder()
     .build()
 ```
 
-Create the wallet
+**Step 8:** Create the wallet
+
+Now we will create our wallet object. Our created variable wallet is of type ErgoWallet and set equal to the blockchain context .getWallet() function. This one line of code will execute all the necessary steps to access the needed wallet in order to spend UTXOs.
+
 ```scala
 val wallet: ErgoWallet = ctx.getWallet()
 ```
