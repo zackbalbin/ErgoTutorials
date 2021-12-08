@@ -113,7 +113,9 @@ val txBuilder = ctx.newTxBuilder()
 
 **Step 9:** Create newBox to spend
 
-todo
+Now we create our newBox. This box will create a new token(s) and send them along with a user specified amount of erg to a wallet. The wallet is set in the config file. This box is the same box we made in the SimpleSend tutorial with one minor change. There is a new line that calls .mintToken().
+
+The .mintToken() function takes in 4 parameters. The first is the token we made in step 7. The next 3 parameters are the variables set equal to their parts of the config file. We made these variables earlier in the tutorial. We pass all these parameters into the .mintToken() function in order to create the token(s).
 
 ```scala
 val newBox = txBuilder.outBoxBuilder()
@@ -130,7 +132,7 @@ val newBox = txBuilder.outBoxBuilder()
 
 **Step 10:** Write rest of mintToken() function
 
-todo
+The rest of our code is the same as in the previous tutorial. Here we are creating a UnsignedTransaction, signing it, and then sending the transaction on the Ergo blockchain. After that, we put the transaction information into a string, convert it to JSON, and return it so it can be called by our main function.
 
 ```scala
     val tx: UnsignedTransaction = txBuilder
@@ -150,7 +152,7 @@ todo
 }
 ```
 
-Full txJson object
+This is the full txJson object.
 
 ```scala
 val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
@@ -196,7 +198,7 @@ val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
 })
 ```
 
-Full mintToken() function
+Our entire mintToken() function should look like this.
 
 ```scala
 def mintToken(configFileName: String): String = {
@@ -256,7 +258,7 @@ def mintToken(configFileName: String): String = {
 }
 ```
 
-Full Application
+And finally the entire application is below.
 
 ```scala
 package minttoken
