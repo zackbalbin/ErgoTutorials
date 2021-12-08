@@ -97,7 +97,7 @@ val boxesToSpend = BoxOperations.selectTop(unspent, totalToSpend)
 
 **Step 7:** Create our new token
 
-todo
+Here we will actually create our new token. We pass in two parameters: the id of the first box in our boxesToSpend list and the amount of tokens we want to mint.
 
 ```scala
 val token = new ErgoToken(boxesToSpend.get(0).getId(), tokenAmount)
