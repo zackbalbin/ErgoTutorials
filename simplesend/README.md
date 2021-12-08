@@ -162,7 +162,10 @@ The transaction builder is an appkit object that we can use to help craft our tr
 val txBuilder = ctx.newTxBuilder()
 ```
 
-Create new box to spend
+**Step 12:** Create new box to spend
+
+todo
+
 ```scala
 val newBox = txBuilder.outBoxBuilder()
     .value(amountToSpend)
