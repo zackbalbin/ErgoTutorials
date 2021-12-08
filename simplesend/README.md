@@ -280,7 +280,10 @@ val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
     })
 ```
 
-After txJson logic brackets close, return txJson to complete the sendTx function
+**Step 17:** Return the txJson string
+
+Recall that our sendTx function reuturns a string. In order to satisfy this, we will return our txJson. The txJson is the information about our transaction in JSON form. We created this information in the code 'signed.toJson(true).'
+
 ```scala
     })
     txJson
