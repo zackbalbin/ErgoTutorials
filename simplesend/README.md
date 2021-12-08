@@ -217,7 +217,10 @@ We will create a new variable of type SignedTransaction called signed: The prove
 val signed: SignedTransaction = prover.sign(tx)
 ```
 
-Send the transaction
+**Step 15:** Send the transaction
+
+Now we can actaully send our transaction! All we have to do is call our blockchain context's .sendTransaction() function and pass in a SignedTransaction. In this example we create a new variable of type String called txId which will the information about our transaction so we can view it on the block explorer.
+
 ```scala
 val txId: String = ctx.sendTransaction(signed)
 ```
