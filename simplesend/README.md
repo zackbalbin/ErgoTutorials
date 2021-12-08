@@ -225,12 +225,18 @@ Now we can actaully send our transaction! All we have to do is call our blockcha
 val txId: String = ctx.sendTransaction(signed)
 ```
 
-Convert the transaction information to JSON
+The transaction is now sent on the blockchain!
+
+**Step 16:** Convert the transaction information to JSON
+
+By converting the transaction information to JSON it becomes much easier for us to read. We do this by calling our signed variable's function called .toJson() and passing the boolean true.
+
 ```scala
 signed.toJson(true)
 ```
 
-The final txJson logic
+Your complete txJson string object should look like this.
+
 ```scala
 val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
       val prover: ErgoProver = ctx.newProverBuilder()
