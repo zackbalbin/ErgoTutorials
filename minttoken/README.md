@@ -86,7 +86,9 @@ val sender = senderProver.getAddress()
 
 **Step 6:** Get UTXOs to spend
 
-todo 
+We are going to find the UTXOs that we can spend by calling .getUnspentBoxesFor() and passing in our sender variable. This finds all the boxes for the address we loaded with our mnemonic object.
+
+We then store those boxes in a variable called boxesToSpend and find the boxes with enough funds to satisfy our totalToSpend variable.
 
 ```scala
 val unspent = ctx.getUnspentBoxesFor(sender)
