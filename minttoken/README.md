@@ -1,11 +1,11 @@
 # Mint Token
 
-Script currently works
+A simple script to mint a transaction and send it to an address that the user specified.
 
 Still need to
 - Optimize code
 - Update config file paramters
-- FInish text based tutorial (like simple send)
+- Review the tutorial to make sure its finished
 
 ### Tutorial
 
