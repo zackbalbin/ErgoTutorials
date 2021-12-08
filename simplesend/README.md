@@ -154,7 +154,10 @@ if (!boxes.isPresent())
     throw new ErgoClientException(s"Not enough coins in the wallet to pay $totalToSpend", null)
 ```
 
-Create the transation builder
+**Step 11:** Create the transation builder
+
+The transaction builder is an appkit object that we can use to help craft our transactions. We create it by calling our blockchain context variable's, ctx, .newTxBuilder() function.
+
 ```scala
 val txBuilder = ctx.newTxBuilder()
 ```
