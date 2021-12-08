@@ -305,7 +305,7 @@ object SimpleSend {
 
             signed.toJson(true)
         })
-    txJson
+        txJson
   }
 
   def main(args: Array[String]): Unit = {
