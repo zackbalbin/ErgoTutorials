@@ -10,7 +10,7 @@ Disclaimer:
 - Not finished yet
 - Will be add more in depth descriptions about each code block soon!
 
-Import the libraries
+**Step 1:** Import the necessary libraries
 
 ```scala
 package simplesend
@@ -19,7 +19,15 @@ import org.ergoplatform.appkit._
 import org.ergoplatform.appkit.config.{ErgoNodeConfig, ErgoToolConfig}
 ```
 
-Create object and functions
+**Step 2:** Create the SimpleSend object with two functions inside of it
+
+The first function is the sendTx function. This function will be where all of the code for actually creating
+and sending the transaction will be written. The function takes in one parameter which is of type string called configFileName. The configFileName is the name of our config file so we can pass variables from our 
+config file to our code. The function will return a string so that we can print out the information from the 
+transaction.
+
+The second function is the main function which will call the sendTx function.
+
 
 ```scala
 object SimpleSend {
@@ -35,13 +43,17 @@ object SimpleSend {
 }
 ```
 
-Create main function logic
+**Step 3:** Create main function logic
+
+First create a variable called txJson of type string and set it equal to the sendTx function with the name of the config file passed into the paramter. After that print out the txJson. 
+
+That is the entire main function now written. Pretty simple.
 ```scala
 val txJson: String = sendTx("ergo_config.json")
 println(txJson)
 ```
 
-Final main function logic
+This is what the whole main function will look like.
 
 ```scala
 def main(args: Array[String]): Unit = {
@@ -51,9 +63,18 @@ def main(args: Array[String]): Unit = {
 ```
 
 
-Now create the sendTx function logic
+Now we will create the sendTx function code
 
-Create config variables
+**Step 4:** Create the configuration variables
+
+The first variable we need to create is the config variable, which is of type ErgoToolConfig. We will set this equal to ErgoToolConfig.load(configFileName). What is does is create a new ErgoToolConfig object with the parameters that we set in our config file.
+
+Second, we will create our nodeConfig object. This will be of type ErgoNodeConfig and we will set that equal to config.getNode(). This will get our node that we want to connect to. Our application will know how to connect to it because of the parmaters created in our config file which we passed to our config object.
+
+Last we will create our Ergo client. We create a new variable called ergoClinet of type ErgoClient. Set that variable equal to RestApiErgoClient.create(nodeConfig). What all that does is create a new object of type RestApiErgoClient and passes in the nodeConfig object we created ealier.
+
+With these three objects, we can interact with our node.
+
 ```scala
 val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
 val nodeConfig: ErgoNodeConfig = config.getNode()
