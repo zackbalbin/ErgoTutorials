@@ -81,7 +81,12 @@ val nodeConfig: ErgoNodeConfig = config.getNode()
 val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
 ```
 
-Create variables based off of config file parameters
+**Step 5:** Create variables from data in our config file
+
+The first variable to create of type Int and is called addressIndex. This variable will be set to the the "addressIndex" variable in our config file. We do this by setting our variable to config.getParameters().get("addressIndex").toInt.
+
+The second variable we will create is our reciverWalletAddress. This is where we will send our funds to later in the script. The recieverWalletAddress is of type Address and we will set it equal to Address.create(). In the create() function we will pass in config.getParameters().get("recieverWalletAddress"). This code will turn the string we create in our config file into an address that we can use later.
+
 ```scala
 val addressIndex: Int = config.getParameters().get("addressIndex").toInt
 val recieverWalletAddress: Address = Address.create(config.getParamters().get("reciverWalletAddress"))
