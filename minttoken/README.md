@@ -75,7 +75,9 @@ val mnemonic = Mnemonic.create(mnemonicString.toCharArray(), mnemonicPasswordStr
 
 **Step 5:** Create our prover
 
-todo
+In this step we are going to create our prover in a different way. We will use the BoxOperations.createProver() function and pass in our blockchain context along with our mnemonic object into the parameters.
+
+After creating our prover, we obtain the address of the sender by calling senderProver.getAddress() and storing it in a variable called sender.
 
 ```scala
 val senderProver = BoxOperations.createProver(ctx, mnemonic)
