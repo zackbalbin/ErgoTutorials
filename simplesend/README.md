@@ -290,7 +290,8 @@ Recall that our sendTx function reuturns a string. In order to satisfy this, we 
 }
 ```
 
-The final sendTx function logic
+Now the sendTx() function is complete and should look like this.
+
 ```scala
 def sendTx(configFileName: String): String = {
     val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
@@ -344,7 +345,7 @@ def sendTx(configFileName: String): String = {
   }
 ```
 
-This is what the full and final script will look like!
+Thats all of the code now written. The final script will look like this!
 
 ```scala
 package simplesend
