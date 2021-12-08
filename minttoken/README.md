@@ -105,7 +105,7 @@ val token = new ErgoToken(boxesToSpend.get(0).getId(), tokenAmount)
 
 **Step 8:** Create our txBuilder
 
-todo
+Now we need to create our txBuilder just like in the SimpleSend tutorial.
 
 ```scala
 val txBuilder = ctx.newTxBuilder()
