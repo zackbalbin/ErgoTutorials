@@ -127,10 +127,15 @@ Now we will create our wallet object. Our created variable wallet is of type Erg
 val wallet: ErgoWallet = ctx.getWallet()
 ```
 
-Create variables for how much Erg to spend
+**Step 9:** Create varaibles to for how much Ergo to spend
+
+The first variable is amountToSpend which is of type Long. The appkit library allows use Parameters.OneErg to send one Erg. If we wanted to send a custom amount, we would need to pass in a Long. Parameters.OneErg passes in 1000000000L into our variable.
+
+The second varaible is also of type Long and is called totalToSpend. This variable will be the sum of our amountToSpend plus a fee. We set our fee to Parameters.Min fee. The MinFee is 1000000L or 0.001 Ergs.
+
 ```scala
 val amountToSpend: Long = Parameters.OneErg
-val totoalToSpend: Long = amountToSpend + Parameters.MinFee
+val totalToSpend: Long = amountToSpend + Parameters.MinFee
 ```
 
 Load the boxes to spend
