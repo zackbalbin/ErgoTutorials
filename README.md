@@ -1,6 +1,6 @@
 # Ergo Tutorials
 
-Welcome to Ergo Tutorials! This is a project that I created in order to give devlopers an easy to understand starting point when enter the Ergo dapp development world. My hope is that my tutorials can help flatten the learning curve that comes with transitioning to a new blockchain. Ergo is a really powerful platform and we are all happy to see your interest in this project!
+Welcome to Ergo Tutorials! This is a project that I created in order to give devlopers an easy to understand starting point when enter the Ergo dapp development world. My hope is that my tutorials can help flatten the learning curve that comes with transitioning to a new blockchain. Ergo is a really powerful platform and we are all happy to see your interest in the project!
 
 ### Tutorials
 
