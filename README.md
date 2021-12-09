@@ -4,10 +4,10 @@ Welcome to Ergo Tutorials! This is a project that I created in order to give dev
 
 ### Tutorials
 
-Project Name | Repo Link | Video Link | Project Difficulty | Development Tool |
-| --- | --- | --- | --- | --- |
-| Simple Send | [Repo](https://github.com/zackbalbin/ErgoTutorials/tree/master/simplesend) | Coming Soon | Starter | Ergo Appkit |
-| Mint Token  | [Repo](https://github.com/zackbalbin/ErgoTutorials/tree/master/minttoken) | Coming Soon | Beginner | Ergo Appkit |
+Project Name | Video Link | Project Difficulty | Development Tool |
+| --- | --- | --- | --- |
+| [Simple Send](https://github.com/zackbalbin/ErgoTutorials/tree/master/simplesend) | Coming Soon | Starter | Ergo Appkit |
+| [Mint Token](https://github.com/zackbalbin/ErgoTutorials/tree/master/minttoken) | Coming Soon | Beginner | Ergo Appkit |
 
 Currently, the Youtube videos are planned. Updates will come soon.
 
