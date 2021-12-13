@@ -18,7 +18,7 @@ object MintToken {
     val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
     
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
-      val amountToSpend: Long = (Parameters.OneErg / 10)
+      val amountToSpend: Long = 0L
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
 
       val mnemonicString = nodeConfig.getWallet().getMnemonic()
