@@ -13,8 +13,10 @@
     },
     "parameters": {
         "addressIndex": 0,
-        "tokenName": "Token Name",
+        "tokenName": "TOKEN NAME",
+        "tokenDescription": "TOKEN DESCRIPTION",
         "tokenAmount": 0,
-        "recieverWalletAddress": "Wallet Address"
+        "tokenDecimals": 0,
+        "recieverWalletAddress": "WALLET ADDRESS"
     }
 }
