@@ -1,5 +1,7 @@
 # Mint Token
 
+#### Code not fully finished yet. Still working
+
 A simple script to mint a transaction and send it to an address that the user specified.
 
 Still need to
