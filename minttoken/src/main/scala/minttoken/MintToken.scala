@@ -37,12 +37,7 @@ object MintToken {
       val newBox = txBuilder.outBoxBuilder()
         .value(amountToSpend)
         .mintToken(token, tokenName, tokenDescription, tokenDecimals)
-        .contract(ctx.compileContract(
-          ConstantsBuilder.create()
-            .item("recPk", recieverWalletAddress.getPublicKey())
-            .build(),
-          "{ recPk }")
-        )
+        .contract(ErgoContracts.sendToPK(ctx, recieverWalletAddress))
         .build()
 
       val tx: UnsignedTransaction = txBuilder
