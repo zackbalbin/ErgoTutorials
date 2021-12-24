@@ -119,16 +119,13 @@ Now we create our newBox. This box will create a new token(s) and send them alon
 
 The .mintToken() function takes in 4 parameters. The first is the token we made in step 7. The next 3 parameters are the variables set equal to their parts of the config file. We made these variables earlier in the tutorial. We pass all these parameters into the .mintToken() function in order to create the token(s).
 
+We also will use a premade contract instead of making our own logic. The new contract line will send the tokens in the box to our specified address.
+
 ```scala
 val newBox = txBuilder.outBoxBuilder()
     .value(amountToSpend)
     .mintToken(token, tokenName, tokenDescription, tokenDecimals)
-    .contract(ctx.compileContract(
-        ConstantsBuilder.create()
-        .item("recPk", recieverWalletAddress.getPublicKey())
-        .build(),
-        "{ recPk }")
-    )
+    .contract(ErgoContracts.sendToPK(ctx, recieverWalletAddress))
     .build()
 ```
 
@@ -177,12 +174,7 @@ val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
     val newBox = txBuilder.outBoxBuilder()
     .value(amountToSpend)
     .mintToken(token, tokenName, tokenDescription, tokenDecimals)
-    .contract(ctx.compileContract(
-        ConstantsBuilder.create()
-        .item("recPk", recieverWalletAddress.getPublicKey())
-        .build(),
-        "{ recPk }")
-    )
+    .contract(ErgoContracts.sendToPK(ctx, recieverWalletAddress))
     .build()
 
     val tx: UnsignedTransaction = txBuilder
@@ -235,12 +227,7 @@ def mintToken(configFileName: String): String = {
         val newBox = txBuilder.outBoxBuilder()
         .value(amountToSpend)
         .mintToken(token, tokenName, tokenDescription, tokenDecimals)
-        .contract(ctx.compileContract(
-            ConstantsBuilder.create()
-            .item("recPk", recieverWalletAddress.getPublicKey())
-            .build(),
-            "{ recPk }")
-        )
+        .contract(ErgoContracts.sendToPK(ctx, recieverWalletAddress))
         .build()
 
         val tx: UnsignedTransaction = txBuilder
@@ -302,12 +289,7 @@ object MintToken {
       val newBox = txBuilder.outBoxBuilder()
         .value(amountToSpend)
         .mintToken(token, tokenName, tokenDescription, tokenDecimals)
-        .contract(ctx.compileContract(
-          ConstantsBuilder.create()
-            .item("recPk", recieverWalletAddress.getPublicKey())
-            .build(),
-          "{ recPk }")
-        )
+        .contract(ErgoContracts.sendToPK(ctx, recieverWalletAddress))
         .build()
 
       val tx: UnsignedTransaction = txBuilder
