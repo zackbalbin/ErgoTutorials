@@ -1,0 +1,19 @@
+{
+    "node": {
+        "nodeApi": {
+            "apiUrl": "http://LocalIPAddress:PORT/",
+            "apiKey": "APIKEY"
+        },
+        "wallet": {
+            "mnemonic": "Mnemonic Words",
+            "password": "Wallet Password",
+            "mnemonicPassword": "Mnemonic Password"
+        },
+        "networkType": "MAINNET"
+    },
+    "parameters": {
+        "addressIndex": 0,
+        "tokenId": "TOKEN ID",
+        "recieverWalletAddress": "WALLET ADDRESS"
+    }
+}

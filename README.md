@@ -8,6 +8,7 @@ Project Name | Video Link | Project Difficulty | Development Tool |
 | --- | --- | --- | --- |
 | [Simple Send](https://github.com/zackbalbin/ErgoTutorials/tree/master/simplesend) | Coming Soon | Starter | Ergo Appkit |
 | [Mint Token](https://github.com/zackbalbin/ErgoTutorials/tree/master/minttoken) | Coming Soon | Beginner | Ergo Appkit |
+| [Send Token](https://github.com/zackbalbin/ErgoTutorials/tree/master/sendtoken) | Coming Soon | Beginner | Ergo Appkit |
 
 Currently, the Youtube videos are planned. Updates will come soon.
 
