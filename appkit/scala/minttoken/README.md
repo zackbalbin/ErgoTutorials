@@ -4,7 +4,7 @@ A simple script to mint a transaction and send it to an address that the user sp
 
 ### Tutorial
 
-Since this is the second tutorial I am going to skip over the basic setup of the application. If you want to see how its done, check out the fist tutorial: [Simple Send](https://github.com/zackbalbin/ErgoTutorials/tree/master/simplesend). 
+Since this is the second tutorial I am going to skip over the basic setup of the application. If you want to see how its done, check out the fist tutorial: [Simple Send](https://github.com/zackbalbin/ErgoTutorials/tree/master/appkit/scala/simplesend). 
 
 **Step 1:** Setup File
 

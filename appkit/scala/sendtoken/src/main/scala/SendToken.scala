@@ -27,14 +27,13 @@ object SendToken {
       val unspent = ctx.getUnspentBoxesFor(sender)
       val boxesToSpend = BoxOperations.selectTop(unspent, totalToSpend)
 
-      //val token = new ErgoToken(boxesToSpend.get(0).getId(), tokenAmount)
+      val token = new ErgoToken(tokenId, 1)
 
       val txBuilder = ctx.newTxBuilder()
       
       val newBox = txBuilder.outBoxBuilder()
         .value(amountToSpend)
-        //.mintToken(token, tokenName, tokenDescription, tokenDecimals)
-        .contract(ErgoContracts.sendToPK(ctx, recieverWalletAddress))
+        .contract()
         .build()
 
       val tx: UnsignedTransaction = txBuilder
