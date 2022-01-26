@@ -12,6 +12,7 @@ object SendToken {
 
     val addressIndex: Int = config.getParameters().get("addressIndex").toInt
     val tokenId: String = config.getParameters().get("tokenId")
+    val tokenAmount: Long = config.getParameters().get("tokenAmount").toLong
     val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
     
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
@@ -27,13 +28,14 @@ object SendToken {
       val unspent = ctx.getUnspentBoxesFor(sender)
       val boxesToSpend = BoxOperations.selectTop(unspent, totalToSpend)
 
-      val token = new ErgoToken(tokenId, 1)
-
       val txBuilder = ctx.newTxBuilder()
       
+      val token = new ErgoToken(tokenId, tokenAmount)
+
       val newBox = txBuilder.outBoxBuilder()
         .value(amountToSpend)
-        .contract()
+        .tokens(token)
+        .contract(ErgoContracts.sendToPK(ctx, recieverWalletAddress))
         .build()
 
       val tx: UnsignedTransaction = txBuilder
