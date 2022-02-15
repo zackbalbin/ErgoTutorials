@@ -8,24 +8,30 @@ object SimpleSend {
   def sendTx(configFileName: String): String = {
     val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
     val nodeConfig: ErgoNodeConfig = config.getNode()
-    val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
+    val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig, "https://api-testnet.ergoplatform.com")
 
-    val addressIndex: Int = config.getParameters().get("addressIndex").toInt
     val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
 
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
-      val prover: ErgoProver = ctx.newProverBuilder()
-        .withMnemonic(
-          SecretString.create(nodeConfig.getWallet().getMnemonic()),
-          SecretString.create(nodeConfig.getWallet().getPassword()))
-        .withEip3Secret(addressIndex)
-        .build()
+      val walletMnemonic: String = nodeConfig.getWallet().getMnemonic()
+      val walletPassword: String = nodeConfig.getWallet().getPassword()
+      val mnemonic: Mnemonic = Mnemonic.create(walletMnemonic.toCharArray(), walletPassword.toCharArray())
 
-      val wallet: ErgoWallet = ctx.getWallet()
+      val senderProver: ErgoProver = ctx.newProverBuilder()
+        .withMnemonic(
+          SecretString.create(walletMnemonic),
+          SecretString.create(walletPassword))
+        .withEip3Secret(0)
+        .build()
+        
+      val senderAddress: Address = Address.createEip3Address(0, NetworkType.TESTNET, SecretString.create(walletMnemonic.toCharArray()), SecretString.create(walletPassword.toCharArray()))
+
       val amountToSpend: Long = Parameters.OneErg
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
-      val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
-      if (!boxes.isPresent())
+
+      val unspentBoxes = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
+      val boxes = BoxOperations.selectTop(unspentBoxes, totalToSpend)
+      if (boxes.isEmpty())
        throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
 
       val txBuilder = ctx.newTxBuilder()
@@ -41,13 +47,13 @@ object SimpleSend {
         .build()
 
       val tx: UnsignedTransaction = txBuilder
-        .boxesToSpend(boxes.get)
+        .boxesToSpend(boxes)
         .outputs(newBox)
         .fee(Parameters.MinFee)
-        .sendChangeTo(prover.getP2PKAddress())
+        .sendChangeTo(senderAddress.asP2PK())
         .build()
 
-      val signed: SignedTransaction = prover.sign(tx)
+      val signed: SignedTransaction = senderProver.sign(tx)
 
       val txId: String = ctx.sendTransaction(signed)
 
@@ -57,7 +63,7 @@ object SimpleSend {
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = sendTx("ergo_config.json")
+    val txJson: String = sendTx("testnet.json")
     println(txJson)
   }
 }

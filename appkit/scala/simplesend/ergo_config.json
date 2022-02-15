@@ -9,7 +9,7 @@
             "password": "Wallet Password",
             "mnemonicPassword": "Mnemonic Password"
         },
-        "networkType": "MAINNET"
+        "networkType": "TESTNET"
     },
     "parameters": {
         "addressIndex": 0,

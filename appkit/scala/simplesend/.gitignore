@@ -11,6 +11,6 @@ project/target
 /.metals
 /.vscode
 
-ergomainnet_config.json
+testnet.json
 
 .DS_STORE
