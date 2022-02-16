@@ -17,7 +17,7 @@ object MintToken {
     val tokenDecimals: Int = 0
     
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
-      val amountToSpend: Long = Parameters.MinChangeValue
+      val amountToSpend: Long = Parameters.OneErg
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
 
       val walletMnomonic: String = nodeConfig.getWallet().getMnemonic()
