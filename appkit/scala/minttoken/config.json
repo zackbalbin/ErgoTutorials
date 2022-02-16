@@ -12,11 +12,5 @@
         "networkType": "MAINNET"
     },
     "parameters": {
-        "addressIndex": 0,
-        "tokenName": "TOKEN NAME",
-        "tokenDescription": "TOKEN DESCRIPTION",
-        "tokenAmount": 0,
-        "tokenDecimals": 0,
-        "recieverWalletAddress": "WALLET ADDRESS"
     }
 }
