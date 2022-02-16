@@ -11,9 +11,9 @@ object MintToken {
     val nodeConfig: ErgoNodeConfig = config.getNode()
     val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig, "https://api-testnet.ergoplatform.com")
 
-    val tokenName: String = "Ergo Tutorials Mint Token 2"
-    val tokenDescription: String = "Example for minting a token with appkit"
-    val tokenAmount: Long = 1L
+    val tokenName: String = ""
+    val tokenDescription: String = ""
+    val tokenAmount: Long = 0L
     val tokenDecimals: Int = 0
     
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {

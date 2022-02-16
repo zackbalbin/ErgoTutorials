@@ -39,9 +39,9 @@ val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
 val nodeConfig: ErgoNodeConfig = config.getNode()
 val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
 
-val tokenName: String = "Ergo Tutorials Mint Token 2"
-val tokenDescription: String = "Example for minting a token with appkit"
-val tokenAmount: Long = 1L
+val tokenName: String = ""
+val tokenDescription: String = ""
+val tokenAmount: Long = 0L
 val tokenDecimals: Int = 0
 ```
 
