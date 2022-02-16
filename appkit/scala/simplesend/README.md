@@ -1,7 +1,5 @@
 # Simple Send
 
-# This tutorial in the README is not updated to the lastest version of the script.
-
 A basic script to send Ergo from a full node wallet to another wallet address using Ergo AppKit.
 
 
@@ -48,7 +46,7 @@ First create a variable called txJson of type string and set it equal to the sen
 
 That is the entire main function now written. Pretty simple.
 ```scala
-val txJson: String = sendTx("ergo_config.json")
+val txJson: String = sendTx("config.json")
 println(txJson)
 ```
 
@@ -56,7 +54,7 @@ This is what the whole main function will look like.
 
 ```scala
 def main(args: Array[String]): Unit = {
-    val txJson: String = sendTx("ergo_config.json")
+    val txJson: String = sendTx("config.json")
     println(txJson)
 }
 ```
@@ -82,12 +80,9 @@ val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
 
 **Step 5:** Create variables from data in our config file
 
-The first variable to create of type Int and is called addressIndex. This variable will be set to the the "addressIndex" variable in our config file. We do this by setting our variable to config.getParameters().get("addressIndex").toInt.
-
-The second variable we will create is our reciverWalletAddress. This is where we will send our funds to later in the script. The recieverWalletAddress is of type Address and we will set it equal to Address.create(). In the create() function we will pass in config.getParameters().get("recieverWalletAddress"). This code will turn the string we create in our config file into an address that we can use later.
+The variable we will create is our reciverWalletAddress. This is where we will send our funds to later in the script. The recieverWalletAddress is of type Address and we will set it equal to Address.create(). In the create() function we will pass in config.getParameters().get("recieverWalletAddress"). This code will turn the string we create in our config file into an address that we can use later.
 
 ```scala
-val addressIndex: Int = config.getParameters().get("addressIndex").toInt
 val recieverWalletAddress: Address = Address.create(config.getParamters().get("reciverWalletAddress"))
 ```
 
@@ -103,30 +98,41 @@ val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
 
 Now we will create all of the logic in side the txJson object.
 
-**Step 7:** Create the prover
+**Step 7** Create Mnemonic
 
-We will now create a new varaible called prover which is of type ErgoProver. We do that by setting it equal to our BlockchainContext object, ctx, .newProverBuilder(). After, we need make sure we use withMnemonic and withEip3Secret. The withMnemonic takes in to parameters which we set equal to our mnemonic phrase and password set in our config file. The Eip3Secret takes in our addressIndex, which is set to 0.
+The mnemonic will be used to create our prover and get our EIP3 Address in later steps. In order to do this, we need two variables: walletMnemonic and walletPassword. Both of type string. We get these values by calling the nodeConfig functions get().getMnemonic() and getWallet().getPassword() of the nodeConfig. Finally, we can create the mnemonic. This is of type Mnemonic. We do this by createing a new Mnemonic object and pass in our two strings converted to character arrays.
+
+```scala
+val walletMnemonic: String = nodeConfig.getWallet().getMnemonic()
+val walletPassword: String = nodeConfig.getWallet().getPassword()
+val mnemonic: Mnemonic = Mnemonic.create(walletMnemonic.toCharArray(), walletPassword.toCharArray())
+
+```
+
+**Step 8:** Create the prover
+
+We will now create a new varaible called prover which is of type ErgoProver. We do that by setting it equal to our BlockchainContext object, ctx, .newProverBuilder(). After, we need make sure we use withMnemonic and withEip3Secret. The withMnemonic takes in to parameters which we set equal to our mnemonic objects we created in step 7. The Eip3Secret takes in our addressIndex, which is set to 0.
 
 Finally, we call the build function to finish the block of code.
 
 ```scala
-val prover: ErgoProver = ctx.newProverBuilder()
-    .withMnemonic(
-        SecretString.create(nodeConfig.getWallet().getMnemonic()),
-        SecretString.create(nodeConfig.getWallet().getPassword()))
-    .withEip3Secret(addressIndex)
-    .build()
+val senderProver: ErgoProver = ctx.newProverBuilder()
+  .withMnemonic(
+    SecretString.create(walletMnemonic),
+    SecretString.create(walletPassword))
+  .withEip3Secret(0)
+  .build()
 ```
 
-**Step 8:** Create the wallet
+**Step 9:** Get our wallet address
 
-Now we will create our wallet object. Our created variable wallet is of type ErgoWallet and set equal to the blockchain context .getWallet() function. This one line of code will execute all the necessary steps to access the needed wallet in order to spend UTXOs.
+Now we will get our EIP3 address. We will create a new object of type Address and call the createEip3Address function. We need to pass in the address index, which is 0, and the NetworkType, which in this case is TESTNET. After that, we can pass in our walletMnemonic and walletPassword object as character arrays and converted to a SecretString.
 
 ```scala
-val wallet: ErgoWallet = ctx.getWallet()
+val senderAddress: Address = Address.createEip3Address(0, NetworkType.TESTNET, SecretString.create(walletMnemonic.toCharArray()), SecretString.create(walletPassword.toCharArray()))
 ```
 
-**Step 9:** Create varaibles to for how much Ergo to spend
+**Step 10:** Create varaibles to for how much Ergo to spend
 
 The first variable is amountToSpend which is of type Long. The appkit library allows use Parameters.OneErg to send one Erg. If we wanted to send a custom amount, we would need to pass in a Long. Parameters.OneErg passes in 1000000000L into our variable.
 
@@ -139,21 +145,24 @@ val amountToSpend: Long = Parameters.OneErg
 val totalToSpend: Long = amountToSpend + Parameters.MinFee
 ```
 
-**Step 10:** Load the boxes to spend
+**Step 11:** Load the boxes to spend
 
 Now we will start putting together everything we need to create our transaction. First we need to get our UTXOs that we can spend. Remember, a UTXO on Ergo is called a box.
 
-First we will create our boxes varaible. Our boxes variable will be an Optional of a List of InputBox. This means that we can either have a value of null or a List of (InputBox)s. We get this list by calling our wallet's getUnspentBoxes function and passing in our totalToSpend variable.
+First we need to get a list of unspentboxes. Our unspentBoxes variable will be an of a List of InputBox. We get this list by calling our wallet's getUnspentBoxesFor function and passing in our senderAddress, 0 for the offset and 20 for the limit.
 
-After we load our boxes we need to test if we have enough funds to spend. We do this by using the .isPresent() function. If there are not enough boxes we will throw a new ErgoClientExecption with the description of the problem that occured.
+Then we can get the boxes we will use by creating a new variable, boxes. We get these boxes by calling the BoxOperations .selectTop function and passing in our unspentBoxes and our totalToSpend.
+
+After we load our boxes we need to test if we have enough funds to spend. We do this by using the .isEmpty() function. If there are not enough boxes we will throw a new ErgoClientExecption with the description of the problem that occured.
 
 ```scala
-val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
-if (!boxes.isPresent())
-    throw new ErgoClientException(s"Not enough coins in the wallet to pay $totalToSpend", null)
+val unspentBoxes = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
+val boxes = BoxOperations.selectTop(unspentBoxes, totalToSpend)
+if (boxes.isEmpty())
+  throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
 ```
 
-**Step 11:** Create the transation builder
+**Step 12:** Create the transation builder
 
 The transaction builder is an appkit object that we can use to help craft our transactions. We create it by calling our blockchain context variable's, ctx, .newTxBuilder() function.
 
@@ -161,7 +170,7 @@ The transaction builder is an appkit object that we can use to help craft our tr
 val txBuilder = ctx.newTxBuilder()
 ```
 
-**Step 12:** Create new box to spend
+**Step 13:** Create new box to spend
 
 This step is the most important step in our whole script. Here is where we create our box that we are going to spend.
 
@@ -185,7 +194,7 @@ val newBox = txBuilder.outBoxBuilder()
     .build()
 ```
 
-**Step 13:** Create a new transaction from box
+**Step 14:** Create a new transaction from box
 
 Now we need to create our transaction. First, we will create a variable called tx of type UnsignedTransaction. We will use the txBuilder again to create our transaction. Just like when we built the box, we will have multiple functions we call in order to build our transaction.
 
@@ -208,7 +217,7 @@ val tx: UnsignedTransaction: txBuilder
 
 All of the code is pretty much written at this point. Now we just have to sign and send our transaction
 
-**Step 14:** Sign the transaction
+**Step 15:** Sign the transaction
 
 We will create a new variable of type SignedTransaction called signed: The prover has a built in function that we can use to sign transcations. All we need to do is call it and pass in our transaction that we want to sign.
 
@@ -216,7 +225,7 @@ We will create a new variable of type SignedTransaction called signed: The prove
 val signed: SignedTransaction = prover.sign(tx)
 ```
 
-**Step 15:** Send the transaction
+**Step 16:** Send the transaction
 
 Now we can actaully send our transaction! All we have to do is call our blockchain context's .sendTransaction() function and pass in a SignedTransaction. In this example we create a new variable of type String called txId which will the information about our transaction so we can view it on the block explorer.
 
@@ -226,7 +235,7 @@ val txId: String = ctx.sendTransaction(signed)
 
 The transaction is now sent on the blockchain!
 
-**Step 16:** Convert the transaction information to JSON
+**Step 17:** Convert the transaction information to JSON
 
 By converting the transaction information to JSON it becomes much easier for us to read. We do this by calling our signed variable's function called .toJson() and passing the boolean true.
 
@@ -238,48 +247,55 @@ Your complete txJson string object should look like this.
 
 ```scala
 val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
-      val prover: ErgoProver = ctx.newProverBuilder()
-        .withMnemonic(
-          SecretString.create(nodeConfig.getWallet().getMnemonic()),
-          SecretString.create(nodeConfig.getWallet().getPassword()))
-        .withEip3Secret(addressIndex)
-        .build()
+  val walletMnemonic: String = nodeConfig.getWallet().getMnemonic()
+  val walletPassword: String = nodeConfig.getWallet().getPassword()
+  val mnemonic: Mnemonic = Mnemonic.create(walletMnemonic.toCharArray(), walletPassword.toCharArray())
 
-      val wallet: ErgoWallet = ctx.getWallet()
-      val amountToSpend: Long = Parameters.OneErg
-      val totalToSpend: Long = amountToSpend + Parameters.MinFee
-      val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
-      if (!boxes.isPresent())
-       throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
+  val senderProver: ErgoProver = ctx.newProverBuilder()
+    .withMnemonic(
+      SecretString.create(walletMnemonic),
+      SecretString.create(walletPassword))
+    .withEip3Secret(0)
+    .build()
+    
+  val senderAddress: Address = Address.createEip3Address(0, NetworkType.TESTNET, SecretString.create(walletMnemonic.toCharArray()), SecretString.create(walletPassword.toCharArray()))
 
-      val txBuilder = ctx.newTxBuilder()
-      
-      val newBox = txBuilder.outBoxBuilder()
-        .value(amountToSpend)
-        .contract(ctx.compileContract(
-          ConstantsBuilder.create()
-            .item("recPk", recieverWalletAddress.getPublicKey())
-            .build(),
-          "{ recPk }")
-        ) 
-        .build()
+  val amountToSpend: Long = Parameters.MinChangeValue
+  val totalToSpend: Long = amountToSpend + Parameters.MinFee
 
-      val tx: UnsignedTransaction = txBuilder
-        .boxesToSpend(boxes.get)
-        .outputs(newBox)
-        .fee(Parameters.MinFee)
-        .sendChangeTo(prover.getP2PKAddress())
-        .build()
+  val unspentBoxes: java.util.List[InputBox] = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
+  val boxes = BoxOperations.selectTop(unspentBoxes, totalToSpend)
+  if (boxes.isEmpty())
+    throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
 
-      val signed: SignedTransaction = prover.sign(tx)
+  val txBuilder = ctx.newTxBuilder()
+  
+  val newBox = txBuilder.outBoxBuilder()
+    .value(amountToSpend)
+    .contract(ctx.compileContract(
+      ConstantsBuilder.create()
+        .item("recPk", recieverWalletAddress.getPublicKey())
+        .build(),
+      "{ recPk }")
+    )
+    .build()
 
-      val txId: String = ctx.sendTransaction(signed)
+  val tx: UnsignedTransaction = txBuilder
+    .boxesToSpend(boxes)
+    .outputs(newBox)
+    .fee(Parameters.MinFee)
+    .sendChangeTo(senderAddress.asP2PK())
+    .build()
 
-      signed.toJson(true)
-    })
+  val signed: SignedTransaction = senderProver.sign(tx)
+
+  val txId: String = ctx.sendTransaction(signed)
+
+  signed.toJson(true)
+})
 ```
 
-**Step 17:** Return the txJson string
+**Step 18:** Return the txJson string
 
 Recall that our sendTx function reuturns a string. In order to satisfy this, we will return our txJson. The txJson is the information about our transaction in JSON form. We created this information in the code **signed.toJson(true).**
 
@@ -293,55 +309,61 @@ Now the sendTx() function is complete and should look like this.
 
 ```scala
 def sendTx(configFileName: String): String = {
-    val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
-    val nodeConfig: ErgoNodeConfig = config.getNode()
-    val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
+  val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
+  val nodeConfig: ErgoNodeConfig = config.getNode()
+  val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig, "https://api-testnet.ergoplatform.com")
 
-    val addressIndex: Int = config.getParameters().get("addressIndex").toInt
-    val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
+  val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
 
-    val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
-      val prover: ErgoProver = ctx.newProverBuilder()
-        .withMnemonic(
-          SecretString.create(nodeConfig.getWallet().getMnemonic()),
-          SecretString.create(nodeConfig.getWallet().getPassword()))
-        .withEip3Secret(addressIndex)
-        .build()
+  val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
+    val walletMnemonic: String = nodeConfig.getWallet().getMnemonic()
+    val walletPassword: String = nodeConfig.getWallet().getPassword()
+    val mnemonic: Mnemonic = Mnemonic.create(walletMnemonic.toCharArray(), walletPassword.toCharArray())
 
-      val wallet: ErgoWallet = ctx.getWallet()
-      val amountToSpend: Long = Parameters.OneErg
-      val totalToSpend: Long = amountToSpend + Parameters.MinFee
-      val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
-      if (!boxes.isPresent())
-       throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
-
-      val txBuilder = ctx.newTxBuilder()
+    val senderProver: ErgoProver = ctx.newProverBuilder()
+      .withMnemonic(
+        SecretString.create(walletMnemonic),
+        SecretString.create(walletPassword))
+      .withEip3Secret(0)
+      .build()
       
-      val newBox = txBuilder.outBoxBuilder()
-        .value(amountToSpend)
-        .contract(ctx.compileContract(
-          ConstantsBuilder.create()
-            .item("recPk", recieverWalletAddress.getPublicKey())
-            .build(),
-          "{ recPk }")
-        ) 
-        .build()
+    val senderAddress: Address = Address.createEip3Address(0, NetworkType.TESTNET, SecretString.create(walletMnemonic.toCharArray()), SecretString.create(walletPassword.toCharArray()))
 
-      val tx: UnsignedTransaction = txBuilder
-        .boxesToSpend(boxes.get)
-        .outputs(newBox)
-        .fee(Parameters.MinFee)
-        .sendChangeTo(prover.getP2PKAddress())
-        .build()
+    val amountToSpend: Long = Parameters.MinChangeValue
+    val totalToSpend: Long = amountToSpend + Parameters.MinFee
 
-      val signed: SignedTransaction = prover.sign(tx)
+    val unspentBoxes: java.util.List[InputBox] = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
+    val boxes = BoxOperations.selectTop(unspentBoxes, totalToSpend)
+    if (boxes.isEmpty())
+      throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
 
-      val txId: String = ctx.sendTransaction(signed)
+    val txBuilder = ctx.newTxBuilder()
+    
+    val newBox = txBuilder.outBoxBuilder()
+      .value(amountToSpend)
+      .contract(ctx.compileContract(
+        ConstantsBuilder.create()
+          .item("recPk", recieverWalletAddress.getPublicKey())
+          .build(),
+        "{ recPk }")
+      )
+      .build()
 
-      signed.toJson(true)
-    })
-    txJson
-  }
+    val tx: UnsignedTransaction = txBuilder
+      .boxesToSpend(boxes)
+      .outputs(newBox)
+      .fee(Parameters.MinFee)
+      .sendChangeTo(senderAddress.asP2PK())
+      .build()
+
+    val signed: SignedTransaction = senderProver.sign(tx)
+
+    val txId: String = ctx.sendTransaction(signed)
+
+    signed.toJson(true)
+  })
+  txJson
+}
 ```
 
 Thats all of the code now written. The final script will look like this!
@@ -354,61 +376,66 @@ import org.ergoplatform.appkit.config.{ErgoNodeConfig, ErgoToolConfig}
 
 object SimpleSend {
 
-    def sendTx(configFileName: String): String = {
-        val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
-        val nodeConfig: ErgoNodeConfig = config.getNode()
-        val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig)
+  def sendTx(configFileName: String): String = {
+    val config: ErgoToolConfig = ErgoToolConfig.load(configFileName)
+    val nodeConfig: ErgoNodeConfig = config.getNode()
+    val ergoClient: ErgoClient = RestApiErgoClient.create(nodeConfig, "https://api-testnet.ergoplatform.com")
 
-        val addressIndex: Int = config.getParameters().get("addressIndex").toInt
-        val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
+    val recieverWalletAddress: Address = Address.create(config.getParameters().get("recieverWalletAddress"))
 
-        val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
-            val prover: ErgoProver = ctx.newProverBuilder()
-                .withMnemonic(
-                SecretString.create(nodeConfig.getWallet().getMnemonic()),
-                SecretString.create(nodeConfig.getWallet().getPassword()))
-                .withEip3Secret(addressIndex)
-                .build()
+    val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
+      val walletMnemonic: String = nodeConfig.getWallet().getMnemonic()
+      val walletPassword: String = nodeConfig.getWallet().getPassword()
+      val mnemonic: Mnemonic = Mnemonic.create(walletMnemonic.toCharArray(), walletPassword.toCharArray())
 
-            val wallet: ErgoWallet = ctx.getWallet()
-            val amountToSpend: Long = Parameters.OneErg
-            val totalToSpend: Long = amountToSpend + Parameters.MinFee
-            val boxes: java.util.Optional[java.util.List[InputBox]] = wallet.getUnspentBoxes(totalToSpend)
-            if (!boxes.isPresent())
-            throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
+      val senderProver: ErgoProver = ctx.newProverBuilder()
+        .withMnemonic(
+          SecretString.create(walletMnemonic),
+          SecretString.create(walletPassword))
+        .withEip3Secret(0)
+        .build()
+        
+      val senderAddress: Address = Address.createEip3Address(0, NetworkType.TESTNET, SecretString.create(walletMnemonic.toCharArray()), SecretString.create(walletPassword.toCharArray()))
 
-            val txBuilder = ctx.newTxBuilder()
-            
-            val newBox = txBuilder.outBoxBuilder()
-                .value(amountToSpend)
-                .contract(ctx.compileContract(
-                ConstantsBuilder.create()
-                    .item("recPk", recieverWalletAddress.getPublicKey())
-                    .build(),
-                "{ recPk }")
-                ) 
-                .build()
+      val amountToSpend: Long = Parameters.MinChangeValue
+      val totalToSpend: Long = amountToSpend + Parameters.MinFee
 
-            val tx: UnsignedTransaction = txBuilder
-                .boxesToSpend(boxes.get)
-                .outputs(newBox)
-                .fee(Parameters.MinFee)
-                .sendChangeTo(prover.getP2PKAddress())
-                .build()
+      val unspentBoxes: java.util.List[InputBox] = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
+      val boxes = BoxOperations.selectTop(unspentBoxes, totalToSpend)
+      if (boxes.isEmpty())
+       throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
 
-            val signed: SignedTransaction = prover.sign(tx)
+      val txBuilder = ctx.newTxBuilder()
+      
+      val newBox = txBuilder.outBoxBuilder()
+        .value(amountToSpend)
+        .contract(ctx.compileContract(
+          ConstantsBuilder.create()
+            .item("recPk", recieverWalletAddress.getPublicKey())
+            .build(),
+          "{ recPk }")
+        )
+        .build()
 
-            val txId: String = ctx.sendTransaction(signed)
+      val tx: UnsignedTransaction = txBuilder
+        .boxesToSpend(boxes)
+        .outputs(newBox)
+        .fee(Parameters.MinFee)
+        .sendChangeTo(senderAddress.asP2PK())
+        .build()
 
-            signed.toJson(true)
-        })
-        txJson
+      val signed: SignedTransaction = senderProver.sign(tx)
+
+      val txId: String = ctx.sendTransaction(signed)
+
+      signed.toJson(true)
+    })
+    txJson
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = sendTx("ergo_config.json")
+    val txJson: String = sendTx("config.json")
     println(txJson)
   }
-
 }
 ```
