@@ -33,7 +33,6 @@ object MintToken {
 
       val senderAddress: Address = Address.createEip3Address(0, NetworkType.TESTNET, SecretString.create(walletMnomonic.toCharArray()), SecretString.create(walletPassword.toCharArray()))
 
-      val sender = senderProver.getAddress()
       val unspent = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
       val boxes = BoxOperations.selectTop(unspent, totalToSpend)
       if (boxes.isEmpty())
