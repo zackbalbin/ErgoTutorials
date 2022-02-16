@@ -63,7 +63,7 @@ object SimpleSend {
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = sendTx("testnet.json")
+    val txJson: String = sendTx("config.json")
     println(txJson)
   }
 }
