@@ -13,7 +13,7 @@ object SendToken {
 
     val tokenId: String = ""
     val tokenAmount: Long = 0L
-    val recieverWalletAddress: Address = Address.create("3WycHxEz8ExeEWpUBwvu1FKrpY8YQCiH1S9PfnAvBX1K73BXBXZa")
+    val recieverWalletAddress: Address = Address.create("")
 
     val txJson: String = ergoClient.execute((ctx: BlockchainContext) => {
       val amountToSpend: Long = Parameters.MinChangeValue
@@ -64,7 +64,7 @@ object SendToken {
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = sendToken("testnet.json")
+    val txJson: String = sendToken("config.json")
     println(txJson)
   }
 }
