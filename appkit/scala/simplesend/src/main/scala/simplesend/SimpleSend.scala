@@ -29,7 +29,7 @@ object SimpleSend {
       val amountToSpend: Long = Parameters.MinChangeValue
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
 
-      val unspentBoxes = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
+      val unspentBoxes: java.util.List[InputBox] = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
       val boxes = BoxOperations.selectTop(unspentBoxes, totalToSpend)
       if (boxes.isEmpty())
        throw new ErgoClientException(s"Not enough coins in the walelt to pay $totalToSpend", null)
