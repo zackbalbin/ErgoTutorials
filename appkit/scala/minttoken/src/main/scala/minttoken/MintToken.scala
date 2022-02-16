@@ -65,7 +65,7 @@ object MintToken {
   }
 
   def main(args: Array[String]): Unit = {
-    val txJson: String = mintToken("testnet.json")
+    val txJson: String = mintToken("config.json")
     println(txJson)
   }
 }
