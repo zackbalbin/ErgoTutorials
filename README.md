@@ -5,7 +5,7 @@ Welcome to Ergo Tutorials! This is a project that I created in order to give dev
 ### Tutorials
 
 Project Name | Video Link | Project Difficulty | Development Tool | Language |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | [Simple Send](https://github.com/zackbalbin/ErgoTutorials/tree/master/appkit/scala/simplesend) | Coming Soon | Starter | Ergo Appkit | Scala |
 | [Mint Token](https://github.com/zackbalbin/ErgoTutorials/tree/master/appkit/scala/minttoken) | Coming Soon | Beginner | Ergo Appkit | Scala |
 | [Send Token](https://github.com/zackbalbin/ErgoTutorials/tree/master/appkit/scala/sendtoken) | Coming Soon | Beginner | Ergo Appkit | Scala |
