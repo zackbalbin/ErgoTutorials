@@ -26,7 +26,7 @@ object SimpleSend {
         
       val senderAddress: Address = Address.createEip3Address(0, NetworkType.TESTNET, SecretString.create(walletMnemonic.toCharArray()), SecretString.create(walletPassword.toCharArray()))
 
-      val amountToSpend: Long = Parameters.OneErg
+      val amountToSpend: Long = Parameters.MinChangeValue
       val totalToSpend: Long = amountToSpend + Parameters.MinFee
 
       val unspentBoxes = ctx.getUnspentBoxesFor(senderAddress, 0, 20)
@@ -43,7 +43,7 @@ object SimpleSend {
             .item("recPk", recieverWalletAddress.getPublicKey())
             .build(),
           "{ recPk }")
-        ) 
+        )
         .build()
 
       val tx: UnsignedTransaction = txBuilder
