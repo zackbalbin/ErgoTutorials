@@ -1,5 +1,5 @@
 import { Wallet, Address, BlockHeaders, BoxId, BoxValue, Contract, DataInputs, DerivationPath, ErgoBoxCandidate, ErgoBoxCandidateBuilder, ErgoBoxCandidates, ErgoStateContext, ExtSecretKey, I64, Mnemonic, NetworkAddress, NetworkPrefix, PreHeader, SecretKey, SecretKeys, TxBuilder, UnsignedInput, UnsignedInputs, UnsignedTransaction, ErgoBoxes } from 'ergo-lib-wasm-nodejs/ergo_lib_wasm.js';
-import { testnetKey } from './testnet-keys';
+import { key } from './testnet-keys';
 
 function createTransaction(recipientAddress, changeAddress, transferAmount, feeAmount, changeAmount, inputIds, currentHeight) {
     let payTo = new ErgoBoxCandidateBuilder(
