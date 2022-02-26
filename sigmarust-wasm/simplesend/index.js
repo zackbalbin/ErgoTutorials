@@ -37,7 +37,7 @@ async function sendTransaction() {
     let recieverAddress = Address.from_testnet_str("3WycHxEz8ExeEWpUBwvu1FKrpY8YQCiH1S9PfnAvBX1K73BXBXZa");
 
     let seed = Mnemonic.to_seed(
-        testnetKey,
+        key,
         ""
     );
 
