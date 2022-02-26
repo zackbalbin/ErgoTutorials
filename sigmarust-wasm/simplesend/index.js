@@ -1,4 +1,6 @@
 import { Wallet, Address, BlockHeaders, BoxId, BoxValue, Contract, DataInputs, DerivationPath, ErgoBoxCandidate, ErgoBoxCandidateBuilder, ErgoBoxCandidates, ErgoStateContext, ExtSecretKey, I64, Mnemonic, NetworkAddress, NetworkPrefix, PreHeader, SecretKey, SecretKeys, TxBuilder, UnsignedInput, UnsignedInputs, UnsignedTransaction, ErgoBoxes } from 'ergo-lib-wasm-nodejs/ergo_lib_wasm.js';
+import { blockContext } from './blocks';
+import { inputBoxesJson } from './boxes';
 import { key } from './testnet-keys';
 
 function createTransaction(recipientAddress, changeAddress, transferAmount, feeAmount, changeAmount, inputIds, currentHeight) {
@@ -68,9 +70,6 @@ async function sendTransaction() {
         myInputs,
         currentHeight
     );
-
-    let blockContext = "";
-    let inputBoxesJson = "";
 
     let blockHeaders = BlockHeaders.from_json(blockContext);
     let preHeader = PreHeader.from_block_header(blockHeaders.get(0));
