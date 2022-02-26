@@ -2,19 +2,19 @@ import { Wallet, Address, BlockHeaders, BoxId, BoxValue, Contract, DataInputs, D
 import { key } from './testnet-keys';
 
 function createTransaction(recipientAddress, changeAddress, transferAmount, feeAmount, changeAmount, inputIds, currentHeight) {
-    let payTo = new ErgoBoxCandidateBuilder(
+    let payBox = new ErgoBoxCandidateBuilder(
         BoxValue.from_i64(I64.from_str(transferAmount)),
         Contract.pay_to_address(recipientAddress),
         currentHeight
     ).build();
 
-    let change = new ErgoBoxCandidateBuilder(
+    let changeBox = new ErgoBoxCandidateBuilder(
         changeAmount,
         Contract.pay_to_address(changeAddress),
         currentHeight
     ).build();
 
-    let fee = ErgoBoxCandidate.new_miner_fee_box(feeAmount, currentHeight);
+    let feeBox = ErgoBoxCandidate.new_miner_fee_box(feeAmount, currentHeight);
 
     let unsignedInputArray = inputIds.map(BoxId.from_str).map(UnsignedInput.from_box_id);
     let unsignedInputs = new UnsignedInputs();
@@ -22,13 +22,13 @@ function createTransaction(recipientAddress, changeAddress, transferAmount, feeA
         unsignedInputs.add(element);
     });
 
-    let outputs = new ErgoBoxCandidates(payTo);
+    let outputs = new ErgoBoxCandidates(payBox);
     
     if (change.value().as_i64().as_num() > 0) {
-        outputs.add(change);
+        outputs.add(changeBox);
     }
 
-    outputs.add(fee);
+    outputs.add(feeBox);
 
     return new UnsignedTransaction(unsignedInputs, new DataInputs(), outputs);
 }
